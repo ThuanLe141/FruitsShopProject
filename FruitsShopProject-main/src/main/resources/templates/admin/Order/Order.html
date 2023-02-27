@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/admin/fragments :: header">
+
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+	<div class="wrapper">
+		<!-- Navbar -->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<!-- /.navbar -->
+
+		<!-- Main Sidebar Container -->
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<!-- WRITE TITLE OF PAGE IN FUTURE -->
+
+
+						</div><!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<!-- WRITE LINK OF PAGE IN FUTURE -->
+
+
+							</ol>
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+				</div><!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<div class="content">
+				<div class="container-fluid">
+
+					<div class="row">
+						<!-- lọc theo trạng thái -->
+						<div class="dropdown no-arrow ml-5" style="margin-right:600px">
+							<a class="dropdown-toggle btn btn-primary btn-sm" href="#" role="button"
+								id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Lọc trạng thái <i class="fas fa-chevron-down"></i>
+							</a>
+							<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+								aria-labelledby="dropdownMenuLink">
+								<div class="dropdown-header">Tùy chọn</div>
+								<a class="dropdown-item" href="/admin-order">Tất cả</a>
+								<a class="dropdown-item" href="/admin-order/unpaid">Chưa thanh
+									toán</a>
+								<a class="dropdown-item " href="/admin-order/cancel">Đã hủy đơn</a>
+								<a class="dropdown-item" href="/admin-order/success">Hoàn thành</a>
+							</div>
+						</div>
+						<!-- lọc theo ngày -->
+						<div class="admin-search-date-1">
+							<form th:action="@{/admin-order}" method="post">
+								<div class="row">
+									<div class="col">
+										<input required th:value="${day}" name="day" type="date" class="form-control">
+									</div>
+									<div class="col">
+										<input required th:value="${end}" name="end" type="date" class="form-control">
+									</div>
+									<div class="col">
+										<button class="btn btn-primary" style="height: auto;min-height: 43px;"><i
+												class='bx bx-search-alt'></i> Tìm</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<label class="btn btn-success">
+							    <a th:href="@{|/admin-order/export/excel|}" class="text-white">
+								Export XLX
+								</a>
+						</label>
+<div class="m-1">
+						<form th:action="@{/admin-order}" class="form-inline my-2 my-lg-0">
+					      <input name="oid" th:value="${oid}" class="form-control mr-sm-2" type="search" placeholder="Tìm theo mã" aria-label="Search">
+					      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm</button>
+					    </form>
+					    </div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th class="shoping__product">Mã đơn hàng</th>
+									<th>Thời Gian</th>
+									<th>Địa Chỉ</th>
+									<th>Hình Thức TT</th>
+									<th>Tình trạng</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="order,state:${orders}">
+									<td>[[${order.order_id}]]</td>
+									<td>
+										<h4><span
+												class="badge badge-primary">[[${#dates.format(order.orderdate,"dd-MM-yyyy
+												hh:mm:ss")}]]</span></h4>
+									</td>
+									<td>[[${order.address}]]</td>
+									<td>[[${order.payment_method.name}]]</td>
+									<td>
+										<h4
+											th:if="${order.orderStatus == 'Hoàn thành'}">
+											<span class="badge badge-success">[[${order.orderStatus}]]</span>
+										</h4>
+										<h4 th:if="${order.orderStatus == 'Đã hủy đơn'}"><span
+												class="badge badge-danger">[[${order.orderStatus}]]</span></h4>
+										<h4 th:if="${order.orderStatus == 'Chưa thanh toán'}"><span
+												class="badge badge-warning">[[${order.orderStatus}]]</span></h4>
+									</td>
+									<td>
+										<a th:if="${order.orderStatus == 'Chưa thanh toán' && order.payment_method.payment_method_id == 1}"
+											th:href="@{|/admin-verifyOrder/${order.order_id}|}"
+											class="btn btn-success">Xác Nhận</a>
+										<a th:if="${order.orderStatus == 'Chưa thanh toán' && order.payment_method.payment_method_id == 1}" 
+											th:href="@{|/admin-cancelOrder/${order.order_id}|}" class="btn btn-danger"><span
+												class="icon_close">Hủy</span></a>
+										<a th:if="${order.orderStatus == 'Đã hủy đơn'}" 
+											th:href="@{|/admin-restoreOrder/${order.order_id}|}"
+											class="btn btn-success">Khôi phục</a>
+										<a th:href="@{|/admin-detailOrder/${order.order_id}|}" class="btn btn-warning">
+											Chi tiết
+										</a>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<center class="m-auto" th:if="${noOrder}!=null">
+				        	<img th:src="@{/photos/order.png}" height="80px"/>
+				        	<h3>[[${noOrder}]]</h3>
+				        	<!-- <h3>[[${noKW}]]</h3> -->
+				        	<a th:href="@{/admin-order}" class="btn btn-warning text-uppercase">quay lại</a>
+			        	</center>
+						<div th:if="${totalElement} > 10" class="text-center" style="margin-left:450px">
+							<nav aria-label="Page navigation example">
+								<ul class="pagination justify-content-center">
+									<li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
+										<a th:href="@{${currentPage > 1} ? ${'?page=' + (currentPage-1)} :''}"
+											class="page-link" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+											<span class="sr-only">Previous</span>
+										</a>
+									</li>
+									<li th:each="i : ${#numbers.sequence(1,totalPage)}" class="page-item">
+										<a class="page-link" th:href="@{'?page='+ ${i} }" th:text="${i}"></a>
+									</li>
+									<!--                                                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+									<!--                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+									<li class="page-item" th:class="${currentPage == totalPage} ? 'disabled' : ''">
+										<a th:href="@{${currentPage < totalPage} ? ${'?page=' + (currentPage+1)} : '' }"
+											class="page-link" href="#" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+											<span class="sr-only">Next</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+
+</body>
+
+</html>

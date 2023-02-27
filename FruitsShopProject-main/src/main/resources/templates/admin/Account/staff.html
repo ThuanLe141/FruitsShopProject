@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/admin/fragments :: header">
+
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+	<div ng-app="myaccount" ng-controller="account-ctrl" class="wrapper">
+		<!---->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<div class="content-wrapper">
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+						<nav class="navbar navbar-light bg-light">
+						  <form class="form-inline">
+						    <input class="form-control mr-sm-2" type="search" placeholder="Search"
+						    	ng-model="form.keyword" aria-label="Search">
+						    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+						    	ng-click="search(form.keyword)">Search</button>
+						  </form>
+						</nav>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<table class="table table-striped">
+							<thead>
+								<tr class="h5">
+									<th class="align-middle" scope="col">Fullname</th>
+									<th class="align-middle" scope="col">Image</th>
+									<th class="align-middle" scope="col">Username</th>
+									<th class="align-middle" scope="col">Email</th>
+									<th class="align-middle" scope="col">Phone</th>
+									<th class="align-middle" scope="col">Address</th>
+									<th class="align-middle" scope="col">Reliability</th>
+									<th class="align-middle" scope="col">Status</th>
+									<th class="align-middle" scope="col">Edit</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="item in pager.items">
+								<tr class="h6">
+									<td class="align-middle">{{item.fullname}}</td>
+									<td class="align-middle">
+										<img alt="" th:src="@{|/photos/{{item.image}}|}" style="width: 100px; height: 100px;">
+									</td>
+									<td  class="align-middle">{{item.username}}</td>
+									<td class="align-middle">{{item.email}}</td>
+									<td class="align-middle">{{item.phone}}</td>
+									<td class="align-middle">{{item.address}}</td>
+									<td class="align-middle">{{item.reliability}}</td>
+									<td class="badge badge-success mt-5" ng-if="item.is_enable == false" >
+										Is Enable
+									</td>
+									<td class="badge badge-danger mt-5" ng-if="item.is_enable == true" >
+										Is Disable
+									</td>
+									<td>
+										<a class="btn btn-primary align-center" style="margin-top:35px" ng-click="edit(item)"
+											th:text="'Edit'"></a>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+						<div class="panel-footer" style="margin-left:400px;margin-bottom:20px">
+							<button ng-click="pager.first()" class="btn btn-danger">
+								<< </button>
+									<button ng-click="pager.prev()" class="btn btn-primary">
+										< </button>
+											<button class="btn btn-success">{{pager.page + 1}} of
+												{{pager.count}}</button>
+											<button ng-click="pager.next()" class="btn btn-primary">
+												>
+											</button>
+											<button ng-click="pager.last()" class="btn btn-danger">
+												>>
+											</button>
+						</div>
+						<div class="col-12">
+							<!-- general form elements -->
+							<div id="form" class="card card-primary">
+								<div class="card-header">
+									<h3 class="card-title">User Details</h3>
+								</div>
+								<form >
+									<div class="card-body">
+										<div class="row">
+											<div class="col-8">
+												<div style="display:none" class="form-group">
+													<label for="inputPrice">Id</label>
+													<input ng-model="form.account_id" type="text" class="form-control"
+														 name="account_id" id="account_id">
+												</div>
+												<div class="form-group">
+													<label for="inputPrice">Username</label>
+													<input  ng-model="form.username" type="text" class="form-control"
+														 name="username" id="username">
+												</div>				
+												<div class="form-group">
+													<label for="inputName">Password</label>
+													<input type="password" class="form-control"
+														id="password" >
+												</div>
+												<div class="form-group">
+													<label for="inputName">Fullname</label>
+													<input ng-model="form.fullname" type="text" class="form-control"
+														 name="fullname" id="fullname">
+												</div>
+												<div class="form-group">
+														<label for="inputQuantity">Email</label>
+														<input ng-model="form.email" type="text"
+															class="form-control" id="email">
+												</div>
+												<div class="form-group">
+													<label for="inputPrice">phone</label>
+													<input ng-model="form.phone" type="text" class="form-control"
+														id="phone">
+												</div>
+												<div class="form-group">
+													<label for="inputPrice">Address</label>
+													<input ng-model="form.address" type="text" class="form-control"
+														id="address" name="address">
+												</div>
+											<!---->	<fieldset style="display:none"   class="form-group row">
+													<legend class="col-form-label col-sm-2 float-sm-left pt-0">Status:
+													</legend>
+													<div class="col-sm-8 ml-3">
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="false"
+																class="form-check-input" type="radio" 
+																name="is_enable">
+															<label class="form-check-label" for="gridRadios1">
+																Enable
+															</label>
+														</div>
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="true"
+																class="form-check-input" type="radio" 
+																 name="is_enable">
+															<label class="form-check-label" for="gridRadios2">
+																Disable
+															</label>
+														</div>
+														<div class="form-check">
+															<input ng-model="form.role.role_id" ng-value="2"
+																class="form-check-input" type="radio" id="gridRadios3"
+																 name="role">
+															<label class="form-check-label" for="gridRadios3">
+																User
+															</label>
+														</div>
+													</div>
+												</fieldset>
+											</div>
+											<div class="col-4">
+												<!---->
+												<div class="card card-primary card-outline">
+													<div class="card-body box-profile">
+														<div class="text-center">
+															<!--<img name="image" ng-src="{{'/user/img/product/' + form.image}"  id="output" class="profile-user-img img-fluid img-circle" style="width: 212px; height: 212px" alt="User profile picture" >-->
+															<img ng-src="{{'/photos/' + form.image}}"
+																style="max-width:100%;" height="200px">
+														</div>
+														<input type="file" class="form-control" id="image"
+															onchange="angular.element(this).scope().imageChanged(this.files)">
+														<br />
+														<div class="form-group">
+															<label for="inputFile">Avatar</label>
+															<div class="input-group">
+																<div class="custom-file">
+																	<!--    <p><input onchange="angular.element(this).scope().imageChanged(this.files)"  path="image" type="file" accept="image/*" name="imageFile" id="file"  style="display: none;"></p>
+									    							<p><label for="file" style="cursor: pointer;">Upload Image</label></p>-->
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-row p-2">
+										<button ng-if="form.is_enable==null" ng-click="create()" class="btn btn-primary mr-3">
+											<b class="glyphicon glyphicon-plus"></b>Create
+										</button>
+										<button ng-if="form.is_enable!=null" ng-click="update()" class="btn btn-warning mr-3">
+											<b class="glyphicon glyphicon-save"></b>Update
+										</button>
+										<button ng-if="form.is_enable==false" ng-click="delete()" class="btn btn-danger mr-3">
+											<b class="glyphicon glyphicon-trash"></b>Delete
+										</button>
+										<button ng-if="form.is_enable==true" ng-click="updateLogical()" class="btn btn-success mr-3">
+											<b class="glyphicon glyphicon-trash"></b>Enable
+										</button>
+										<button ng-click="reset()" class="btn btn-info">
+											<b class="glyphicon glyphicon-refresh"></b>Reset
+										</button>
+									</div>
+								</form>
+
+							</div>
+							<!-- /.card -->
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+
+		<!-- Main Footer -->
+		
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+	<script>
+		const app = angular.module("myaccount", []);
+		app.controller("account-ctrl", function ($scope, $http) {
+			
+			$scope.items = [];
+			$scope.cates = [];
+			$scope.form = {};
+			$scope.initialize = function () {
+				//load products
+				$http.get("/rest/accounts/staff").then(resp => {
+					$scope.items = resp.data;
+					$scope.items.forEach(item => {
+						$scope.form.image = "user.png";
+					})
+				});
+			}
+			//Khởi đầu
+			$scope.initialize();
+			
+			// Search by keyword
+			$scope.search = function (keyword) {
+				$http.get(`/rest/accounts/keyword/${keyword}/1`).then(resp => {		
+					$scope.items = resp.data;
+				});
+			}
+			//Xóa form
+			$scope.reset = function () {
+				$scope.form = {
+					image: "user.png",
+				}
+				$("input#username").prop('readonly',false);
+			}
+
+			//Hiển thị lên form
+			$scope.edit = function (item) {
+				$scope.form = angular.copy(item);
+				//Chuyển sang tab form
+				//$(".nav-tabs a:eq(0)").tab("show");
+				$('html, body').animate({
+					scrollTop: $('#form').offset().top
+				}, 1000);
+				$("input#username").prop('readonly',true);
+			}
+
+			//Thêm sản phẩm mới
+			$scope.create = function () {
+				var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				 for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.username == $scope.items[i].username){
+		             	alert("Username này đã tồn tại");
+		               	return;
+		             }else if($scope.form.email == $scope.items[i].email){
+		             	alert("Email này đã tồn tại");
+		               	return;
+		             }else if($scope.form.phone == $scope.items[i].phone){
+		             	alert("Số điện thoại này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("username").value == ""){
+					alert("Chưa nhập username");
+					return;
+				}else if(document.getElementById("username").value.length < 5){
+					alert("Username phải ít nhất 5 kí tự");
+					return;
+				}else if(document.getElementById("password").value == ""){
+					alert("Chưa nhập password");
+					return;
+				}else if(document.getElementById("password").value.length < 6){
+					alert("Password quá ngắn");
+					return;
+				}else if(document.getElementById("fullname").value == ""){
+					alert("Chưa nhập họ tên")
+					return;
+				}else if(document.getElementById("email").value == ""){
+					alert("Chưa nhập email");
+					return;
+				}else if(!document.getElementById("email").value.match(mailformat)){
+					alert("Email không hợp lệ");
+					return;
+				}else if(document.getElementById("phone").value == ""){
+					alert("Chưa nhập số điện thoại");
+					return;
+				}else if(!document.getElementById("phone").value.match(/^\d{10}$/)){
+					alert("Số điện thoại không hợp lệ");
+					return;
+				}else if(document.getElementById("address").value == ""){
+					alert("Chưa nhập địa chỉ");
+					return;
+				}
+				/*else if(document.getElementById("image").value == ""){
+					alert("Chưa chọn hình");
+					return;
+				}*/
+				else{
+					$scope.form.password = document.getElementById("password").value;
+					$scope.form.is_enable = false;
+					$scope.form.role={role_id:1};
+					//$scope.form.image = "user.png";
+					var item = angular.copy($scope.form);
+				}
+				/*
+				*/
+				$http.post(`/rest/accounts`, item).then(resp => {
+	            		$scope.items.push(resp.data);
+						$scope.reset();
+						alert("Thêm mới người dùng thành công!");
+						location.reload();
+	        	}).catch(error => {
+					alert("Lỗi thêm mới người dùng!");
+					console.log("Error", error);
+				});
+			}
+
+
+
+			//Cập nhật sản phẩm
+			$scope.update = function () {
+				var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				 for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.username == $scope.items[i].username && $scope.form.account_id != $scope.items[i].account_id){
+		             	alert("Username này đã tồn tại");
+		               	return;
+		             }else if($scope.form.email == $scope.items[i].email && $scope.form.account_id != $scope.items[i].account_id){
+		             	alert("Email này đã tồn tại");
+		               	return;
+		             }else if($scope.form.phone == $scope.items[i].phone && $scope.form.account_id != $scope.items[i].account_id){
+		             	alert("Số điện thoại này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("username").value == ""){
+					alert("Chưa nhập username");
+					return;
+				}else if(document.getElementById("username").value.length < 5){
+					alert("Username phải ít nhất 5 kí tự");
+					return;
+				}else if(document.getElementById("password").value.length >= 1 && document.getElementById("password").value.length < 6){
+					alert("Password quá ngắn");
+					return;
+				}else if(document.getElementById("fullname").value == ""){
+					alert("Chưa nhập họ tên")
+					return;
+				}else if(document.getElementById("email").value == ""){
+					alert("Chưa nhập email");
+					return;
+				}else if(!document.getElementById("email").value.match(mailformat)){
+					alert("Email không hợp lệ");
+					return;
+				}else if(document.getElementById("phone").value == ""){
+					alert("Chưa nhập số điện thoại");
+					return;
+				}else if(!document.getElementById("phone").value.match(/^\d{10}$/)){
+					alert("Số điện thoại không hợp lệ");
+					return;
+				}else if(document.getElementById("address").value == ""){
+					alert("Chưa nhập địa chỉ");
+					return;
+				}
+			/*	else if(document.getElementById("image").value == ""){
+					alert("Chưa chọn hình");
+					return;
+				}*/
+				else{
+					if(document.getElementById("password").value == ""){
+						$scope.form.is_enable = false;
+						//$scope.form.image = "user.png";
+						var item = angular.copy($scope.form);
+					}else{
+						$scope.form.password = document.getElementById("password").value;
+						$scope.form.is_enable = false;
+						//$scope.form.image = "user.png";
+						var item = angular.copy($scope.form);
+					}
+				}
+				var item = angular.copy($scope.form);
+				$http.put(`/rest/accounts/${item.account_id}`, item).then(resp => {
+					var index = $scope.items.findIndex(p => p.id == item.id);
+					$scope.items[index] = item;
+					alert("Cập nhật người dùng thành công!");
+					location.reload();
+				})
+					.catch(error => {
+						alert("Người dùng hiện đang sử dụng dịch vụ!");
+						console.log("Error", error);
+					});
+			}
+
+			//Xóa sản phẩm
+			$scope.delete = function (item) {
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn xóa người dùng này?")) {
+					$http.put(`/rest/accounts/deleteLogical/${item.account_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Xóa người dùng thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Người dùng hiện đang sử dụng dịch vụ!");
+						console.log("Error", error);
+					})
+				}
+			}
+
+			//Cập nhật tình trạng
+			$scope.updateLogical = function (item) {
+				//$scope.form.is_enable = true;
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn khôi phục người dùng này?")) {
+					$http.put(`/rest/accounts/updateLogical/${item.account_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Khôi phục người dùng thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi bật hoạt động người dùng!");
+						console.log("Error", error);
+					})
+				}
+			}
+				
+			//Upload hình
+			$scope.imageChanged = function (files) {
+				var data = new FormData();
+				data.append('file', files[0]);
+				$http.post('/rest/upload/photos/images', data, {
+					transformRequest: angular.identity,
+					headers: {'Content-Type': undefined}
+				}).then(resp => {
+					$scope.form.image = resp.data.name;
+				}).catch(error => {
+					alert("Lỗi upload hình ảnh");
+					console.log("Error", error);
+				})
+			}
+
+
+			//Phân trang
+			$scope.pager = {
+				page: 0,
+				size: 5,
+				get items() {
+					var start = this.page * this.size;
+					return $scope.items.slice(start, start + this.size)
+				},
+				get count() {
+					return Math.ceil(1.0 * $scope.items.length / this.size);
+				},
+				first() {
+					this.page = 0;
+				},
+				prev() {
+					this.page--;
+					if (this.page < 0) {
+						this.last();
+					}
+				},
+				next() {
+					this.page++;
+					if (this.page >= this.count) {
+						this.first();
+					}
+				},
+				last() {
+					this.page = this.count - 1;
+				},
+
+			}
+
+		});
+	</script>
+</body>
+
+</html>

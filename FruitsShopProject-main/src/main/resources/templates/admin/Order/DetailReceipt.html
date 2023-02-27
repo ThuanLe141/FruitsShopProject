@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/admin/fragments :: header">
+
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+	<div class="wrapper">
+		<!-- Navbar -->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<!-- /.navbar -->
+
+		<!-- Main Sidebar Container -->
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<!-- WRITE TITLE OF PAGE IN FUTURE -->
+
+
+						</div><!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<!-- WRITE LINK OF PAGE IN FUTURE -->
+
+
+							</ol>
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+				</div><!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row" style="background-color: #10ac84;">
+						<div class="text-center" style="margin-right:150px;margin-left:10px"><b style="font-size:20px">Username</b><hr>
+								<div class="text-warning" th:each="order:${ordersAll}">
+									<td style="background-color:red;margin-left:130px;"> [[${order[0]}]]</td>
+									<hr>
+								</div>
+							</div>
+						
+							<div class="text-center" style="margin-right:150px"><b style="font-size:20px">Tổng hóa đơn</b><hr>
+								<div class="text-warning" th:each="order:${ordersAll}">
+									<td> [[${order[1]}]]</td>
+									<hr>
+								</div>
+							</div>
+							<div class="text-center" style="margin-right:150px"><b style="font-size:20px">Chưa thanh toán</b><hr>
+								<div class="text-warning" th:each="order:${orderListStatus1}">
+									<td  th:if="${order}!=null"> [[${order[1]}]]</td>
+									<hr>
+								</div>
+							</div>
+							<div class="text-center" style="margin-right:150px "><b style="font-size:20px">Hoàn thành</b><hr>
+								<div class="text-warning" th:each="order:${orderListStatus2}">
+									<td> [[${order[1]}]]</td>
+									<hr>
+								</div>
+							</div>
+							<div class="text-center" style="margin-right:150px"><b style="font-size:20px">Hủy đơn</b><hr>
+								<div class="text-warning" th:each="order:${orderListStatus3}">
+									<td> [[${order[1]}]]</td>
+									<hr>
+								</div>
+							</div>
+				</div>
+			</div>
+		</div>
+		<aside class="control-sidebar control-sidebar-dark">
+		</aside>
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+
+</body>
+
+</html>

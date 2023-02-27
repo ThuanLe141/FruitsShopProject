@@ -1,0 +1,82 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/user/index :: dynamic(~{::main})}">
+
+<head>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<style type="text/css">
+	</style>
+</head>
+
+<body>
+<main id="LoginForm">
+	<section class="breadcrumb-section set-bg"
+			data-setbg="/user/img/breadcrumb.jpg">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-center">
+						<div class="breadcrumb__text">
+							<h2>Quên Mật Khẩu</h2>
+							<div class="breadcrumb__option">
+								<a href="./index.html" th:text="#{img.title}">Trang chủ</a> <span>Quên Mật Khẩu</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+<form  name="frmForgotPW"  th:action="@{/forgot_password}" method="post">
+<section style="background: #23CFC4;background: linear-gradient(to top, #23CFC4 0%, #1F77CF 100%);">
+  <div class="container py-5 h-75">
+    <div class="row mt-4 d-flex justify-content-center align-items-center h-50">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+          	<input style="display:none" type="text" id="kt" th:value="${kt}"/>
+			 <span th:if="${kt} == 'true'">Quay lại trang chủ sau:<span id="minu">10</span></span>
+			<div style="text-align: center" th:if="${message != null}">
+				<p class="text-success">[[${message}]]</p>
+			</div>
+			<div style="text-align: center" th:if="${error != null}">
+				<p class="text-success">[[${error}]]</p>
+			</div>
+            <h2 class="text-uppercase text-center mb-5">Quên mật khẩu</h2>
+            <div class="form-outline mb-5">
+              	<input ng-model="email" required name="email" type="email"  class="form-control" id="inputEmail" placeholder="Email của bạn">
+              	<div style="margin-right:160px" class="text-danger font-italic" ng-show="frmForgotPW.email.$touched && frmForgotPW.email.$invalid">Không đúng định dạng email</div>
+            </div>
+			<button class="btn btn-lg btn-block btn-primary" type="submit">Kiểm Tra Gmail</button>
+			 <div class="form-check d-flex justify-content-center">
+				<label class="form-check-label" for="form2Example3g">
+					Về trang chủ ?<a href="/index" class="text-body">
+					<u>Trang chủ</u></a>
+				</label>
+			 </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</form> 
+	<script>
+			var time = 10;
+	       setInterval(function() {
+	       		if(document.getElementById("kt").value == "true"){
+			         time--;
+			         if (time === 0) {
+			                window.location.href = '/index';
+			         }
+			         document.getElementById("minu").innerText = time;
+			     }
+		     }, 1000);
+	</script>
+</main>
+</body>
+
+</html>

@@ -1,0 +1,408 @@
+</html><!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/admin/fragments :: header">
+  
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+<body class="hold-transition sidebar-mini">
+	<div ng-app="mydiscount" ng-controller="discount-ctrl" class="wrapper">
+		<!---->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<div class="content-wrapper">
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+						<nav class="navbar navbar-light bg-light">
+						  <form class="form-inline">
+						    <input class="form-control mr-sm-2" type="search" placeholder="Search"
+						    	ng-model="form.keyword" aria-label="Search">
+						    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+						    	ng-click="search(form.keyword)">Search</button>
+						  </form>
+						</nav>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<table class="table table-striped">
+							<thead>
+								<tr class="h5">
+									<th class="shoping__product">#</th>
+									<th>Name</th>
+									<th>Discount</th>
+									<th>Start time</th>
+									<th>End time</th>
+									<th>Status</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="item in pager.items">
+								<tr>
+									<th class="align-middle" scope="row">{{item.product_id}}</th>
+									<td class="align-middle">{{item.name}}</td>
+									<td class="align-middle">{{item.discount}}</td>
+									<td class="align-middle">{{item.start_time | date:'dd/MM/yyyy'}}</td>
+									<td class="align-middle">{{item.end_time | date:'dd/MM/yyyy'}}</td>
+									<td class="badge badge-success mt-3" ng-if="item.is_enable == false">
+										Is Enable
+									</td>
+									<td class="badge badge-danger mt-3" ng-if="item.is_enable == true">
+										Is Disable
+									</td>
+									<td>
+										<a class="btn btn-primary my-2 align-center" ng-click="edit(item)"
+											th:text="'Edit'"></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="panel-footer" style="margin-left:400px;margin-bottom:20px">
+							<button ng-click="pager.first()" class="btn btn-danger">
+								<< </button>
+									<button ng-click="pager.prev()" class="btn btn-primary">
+										< </button>
+											<button class="btn btn-success">{{pager.page + 1}} of
+												{{pager.count}}</button>
+											<button ng-click="pager.next()" class="btn btn-primary">
+												>
+											</button>
+											<button ng-click="pager.last()" class="btn btn-danger">
+												>>
+											</button>
+						</div>
+						<div class="col-12">
+							<!-- general form elements -->
+							<div id="form" class="card card-primary">
+								<div class="card-header">
+									<h3 class="card-title">Discount Details</h3>
+								</div>
+								<form >
+									<div class="card-body">
+										<div class="row">
+											<div class="col-8">
+												<div style="display:none" class="form-group">
+													<label for="name">ID</label>
+													<input ng-model="form.discount_id" type="text" class="form-control"
+														id="discount_id" name="discount_id" placeholder="Discount Name">
+												</div>
+												<div class="form-group">
+													<label for="name">Name</label>
+													<input ng-model="form.name" type="text" class="form-control"
+														id="name" name="name" placeholder="Discount Name">
+												</div>
+												<div class="form-group">
+													<label for="discount">Discount</label>
+													<input ng-model="form.discount" type="number" class="form-control"
+														id="discount" name="price">
+												</div>
+												<div class="form-row">
+													<div class="form-group col-md-6">
+														<label for="startTime">Start time</label>
+														<input ng-model="form.start_time" type="date"
+															class="form-control" id="startTime" name="quantity">
+													</div>
+													<div class="form-group col-md-6">
+														<label for="endTime">End time</label>
+														<input ng-model="form.end_time" type="date" 
+															class="form-control" id="endTime" name="weight">
+													</div>
+												</div>
+												<fieldset style="display:none" class="form-group row">
+													<legend class="col-form-label col-sm-2 float-sm-left pt-0">Status:
+													</legend>
+													<div class="col-sm-8 ml-3">
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="false"
+																class="form-check-input" type="radio" id="gridRadios1"
+																checked name="is_enable">
+															<label class="form-check-label" for="gridRadios1">
+																Enable
+															</label>
+														</div>
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="true"
+																class="form-check-input" type="radio" id="gridRadios2"
+																value="false" name="is_enable">
+															<label class="form-check-label" for="gridRadios2">
+																Disable
+															</label>
+														</div>
+													</div>
+												</fieldset>
+											</div>
+										</div>
+									</div>
+									<div class="form-row p-2">
+										<button ng-if="form.is_enable==null" ng-click="create()" class="btn btn-primary mr-3">
+											<b class="glyphicon glyphicon-plus"></b>Create
+										</button>
+										<button ng-if="form.is_enable!=null" ng-click="update()" class="btn btn-warning mr-3">
+											<b class="glyphicon glyphicon-save"></b>Update
+										</button>
+									<!--	<button ng-if="form.is_enable==false" ng-click="delete()" class="btn btn-danger mr-3">
+											<b class="glyphicon glyphicon-trash"></b>Delete
+										</button>
+										<button ng-if="form.is_enable==true" ng-click="updateLogical()" class="btn btn-success mr-3">
+											<b class="glyphicon glyphicon-trash"></b>Enable
+										</button>-->
+										<button ng-click="reset()" class="btn btn-info">
+											<b class="glyphicon glyphicon-refresh"></b>Reset
+										</button>
+									</div>
+								</form>
+
+							</div>
+							<!-- /.card -->
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+
+	<script>
+		const app = angular.module("mydiscount", []);
+		app.controller("discount-ctrl", function ($scope, $http) {
+			
+			$scope.items = [];
+			$scope.cates = [];
+			$scope.form = {};
+			
+			$scope.initialize = function () {
+				//load products
+				$http.get("/rest/discounts").then(resp => {
+					$scope.items = resp.data;
+					//$scope.items.forEach(item => {
+						//$scope.form.image = "user.png";
+					//})
+				});
+			}
+			//Khởi đầu
+			$scope.initialize();
+			
+			// Search by keyword
+			$scope.search = function (keyword) {
+				//var keyword = $scope.form.keyword;
+				$http.get(`/rest/discounts/keyword/${keyword}`).then(resp => {		
+					$scope.items = resp.data;
+				});
+			}
+
+			//Xóa form
+			$scope.reset = function () {
+				$scope.form = {
+				}
+			}
+
+			//Hiển thị lên form
+			$scope.edit = function (item) {
+			
+				$scope.form = angular.copy(item);
+				//Chuyển sang tab form
+				//$(".nav-tabs a:eq(0)").tab("show");
+				$('html, body').animate({
+					scrollTop: $('#form').offset().top
+				}, 1000);
+			}
+
+			//Thêm sản phẩm mới
+			$scope.create = function () {
+				 
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name){
+		             	alert("Sự kiện khuyến mãi này đã tồn tại");
+		               	return;
+		             }
+	            }
+	            var d = new Date();
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập tên khuyến mãi!");
+					return;
+				}else if(document.getElementById("discount").value == ""){
+					alert("Chưa nhập số giá trị khuyến mãi!");
+					return;
+				}else if(document.getElementById("discount").value > 100 || 
+						document.getElementById("discount").value < 0){
+					alert("Giá trị của khuyến mãi phải nằm trong 0 - 100%!");
+					return;
+				}else if(document.getElementById("startTime").value == ""){
+					alert("Chưa nhập thời gian bắt đầu!");
+					return;
+				}else if(document.getElementById("endTime").value == ""){
+					alert("Chưa nhập thời gian kết thúc")
+					return;
+				}else if(document.getElementById("endTime").value < document.getElementById("startTime").value){
+					alert("Ngày kết thúc không được nhỏ hơn ngày bắt đầu!");
+					return;
+				}else if(document.getElementById("startTime").value < d.toLocaleDateString("en-CA") 
+								|| document.getElementById("endTime").value < d.toLocaleDateString("en-CA")){
+					alert("Không được chọn thời điểm trong quá khứ!");
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				
+				$http.post(`/rest/discounts`, item).then(resp => {
+					$scope.items.push(resp.data);
+					$scope.reset();
+					alert("Thêm mới khuyến mãi thành công!");
+					location.reload();
+				}).catch(error => {
+					alert("Lỗi thêm mới khuyến mãi!");
+					console.log("Error", error);
+				});
+			}
+
+
+
+			//Cập nhật sản phẩm
+			$scope.update = function () {
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name && $scope.form.discount_id != $scope.items[i].discount_id){
+		             	alert("Sự kiện khuyến mãi này đã tồn tại");
+		               	return;
+		             }
+	            }
+	             var d = new Date();
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập tên khuyến mãi!");
+					return;
+				}else if(document.getElementById("startTime").value == ""){
+					alert("Chưa nhập thời gian bắt đầu!");
+					return;
+				}else if(document.getElementById("endTime").value == ""){
+					alert("Chưa nhập thời gian kết thúc")
+					return;
+				}else if(document.getElementById("discount").value == ""){
+					alert("Chưa nhập số giá trị khuyến mãi!");
+					return;
+				}else if(document.getElementById("discount").value > 100 || 
+						document.getElementById("discount").value < 0){
+					alert("Giá trị của khuyến mãi phải nằm trong 0 - 100%!");
+					return;
+				}else if(document.getElementById("endTime").value < document.getElementById("startTime").value){
+					alert("Ngày kết thúc không được lớn hơn ngày bắt đầu!");
+					return;
+				}else if(document.getElementById("startTime").value < d.toLocaleDateString("en-CA") 
+								|| document.getElementById("endTime").value < d.toLocaleDateString("en-CA")){
+					alert("Không được chọn thời điểm trong quá khứ!");
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				//var item = angular.copy($scope.form);
+				$http.put(`/rest/discounts/${item.discount_id}`, item).then(resp => {
+					var index = $scope.items.findIndex(p => p.id == item.id);
+					$scope.items[index] = item;
+					alert("Cập nhật khuyến mãi thành công!");
+					location.reload();
+				})
+					.catch(error => {
+						alert("Lỗi cập nhật khuyến mãi!");
+						console.log("Error", error);
+					});
+			}
+
+			//Xóa sản phẩm
+			$scope.delete = function (item) {
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn xóa khuyến mãi này?")) {
+					$http.put(`/rest/discounts/deleteLogical/${item.discount_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Xóa khuyến mãi thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi tắt khuyến mãi!");
+						console.log("Error", error);
+					})
+				}
+			}
+			
+			//Cập nhật tình trạng
+			$scope.updateLogical = function (item) {
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn khôi phục khuyến mãi này?")) {
+					$http.put(`/rest/discounts/updateLogical/${item.discount_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Khôi phục khuyến mãi thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi tắt khuyến mãi!");
+						console.log("Error", error);
+					})
+				}
+			}
+
+			//Phân trang
+			$scope.pager = {
+				page: 0,
+				size: 5,
+				get items() {
+					var start = this.page * this.size;
+					return $scope.items.slice(start, start + this.size)
+				},
+				get count() {
+					return Math.ceil(1.0 * $scope.items.length / this.size);
+				},
+				first() {
+					this.page = 0;
+				},
+				prev() {
+					this.page--;
+					if (this.page < 0) {
+						this.last();
+					}
+				},
+				next() {
+					this.page++;
+					if (this.page >= this.count) {
+						this.first();
+					}
+				},
+				last() {
+					this.page = this.count - 1;
+				},
+
+			}
+
+		});
+	</script>
+</body>
+</html>

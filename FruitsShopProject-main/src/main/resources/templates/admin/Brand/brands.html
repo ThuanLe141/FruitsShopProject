@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/admin/fragments :: header">
+
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+	<div ng-app="mybrand" ng-controller="brand-ctrl" class="wrapper">
+		<!---->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<div class="content-wrapper">
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+						<nav class="navbar navbar-light bg-light">
+						  <form class="form-inline">
+						    <input class="form-control mr-sm-2" type="search" placeholder="Search"
+						    	ng-model="form.keyword" aria-label="Search">
+						    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+						    	ng-click="search(form.keyword)">Search</button>
+						  </form>
+						</nav>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<table class="table table-striped">
+							<thead>
+								<tr class="h5">
+									<th class="shoping__product">#</th>
+									<th>Name</th>
+									<th>Status</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="item in pager.items">
+								<tr>
+									<th class="align-middle" scope="row">{{item.brand_id}}</th>
+									<td class="align-middle">{{item.name}}</td>
+									<td class="badge badge-success mt-4" ng-if="item.is_enable == false">
+										Is Enable
+									</td>
+									<td class="badge badge-danger mt-4" ng-if="item.is_enable == true">
+										Is Disable
+									</td>
+									<td>
+										<a class="btn btn-primary align-center" style="margin-top:15px" ng-click="edit(item)"
+											th:text="'Edit'"></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="panel-footer" style="margin-left:400px;margin-bottom:20px">
+							<button ng-click="pager.first()" class="btn btn-danger">
+								<< </button>
+									<button ng-click="pager.prev()" class="btn btn-primary">
+										< </button>
+											<button class="btn btn-success">{{pager.page + 1}} of
+												{{pager.count}}</button>
+											<button ng-click="pager.next()" class="btn btn-primary">
+												>
+											</button>
+											<button ng-click="pager.last()" class="btn btn-danger">
+												>>
+											</button>
+						</div>
+						<div class="col-12">
+							<!-- general form elements -->
+							<div id="form" class="card card-primary">
+								<div class="card-header">
+									<h3 class="card-title">Brand Details</h3>
+								</div>
+								<form >
+									<div class="card-body">
+										<div class="row">
+											<div class="col-8">
+												<div style="display:none" class="form-group">
+													<label for="name">ID</label>
+													<input ng-model="form.brand_id" type="text" class="form-control"
+														id="brand_id" name="brand_id" placeholder="Brand Name">
+												</div>
+												<div class="form-group">
+													<label for="name">Name</label>
+													<input ng-model="form.name" type="text" class="form-control"
+														id="name" name="name" placeholder="Brand Name">
+												</div>
+												<fieldset style="display:none" class="form-group row">
+													<legend class="col-form-label col-sm-2 float-sm-left pt-0">Status:
+													</legend>
+													<div class="col-sm-8 ml-3">
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="false"
+																class="form-check-input" type="radio" id="gridRadios1"
+																checked name="is_enable">
+															<label class="form-check-label" for="gridRadios1">
+																Enable
+															</label>
+														</div>
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="true"
+																class="form-check-input" type="radio" id="gridRadios2"
+																value="false" name="is_enable">
+															<label class="form-check-label" for="gridRadios2">
+																Disable
+															</label>
+														</div>
+													</div>
+												</fieldset>
+											</div>
+										<div class="form-row p-2 col-5">
+											<button ng-if="form.is_enable==null" ng-click="create()" class="btn btn-primary mr-3">
+												<b class="glyphicon glyphicon-plus"></b>Create
+											</button>
+											<button ng-if="form.is_enable!=null" ng-click="update()" class="btn btn-warning mr-3">
+												<b class="glyphicon glyphicon-save"></b>Update
+											</button>
+											<button ng-if="form.is_enable==false" ng-click="delete()" class="btn btn-danger mr-3">
+												<b class="glyphicon glyphicon-trash"></b>Delete
+											</button>
+											<button ng-if="form.is_enable==true" ng-click="updateLogical()" class="btn btn-success mr-3">
+												<b class="glyphicon glyphicon-trash"></b>Enable
+											</button>
+											<button ng-click="reset()" class="btn btn-info">
+												<b class="glyphicon glyphicon-refresh"></b>Reset
+											</button>
+										</div>
+								</form>
+
+							</div>
+							<!-- /.card -->
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+	<script>
+		const app = angular.module("mybrand", []);
+		app.controller("brand-ctrl", function ($scope, $http) {
+			
+			$scope.items = [];
+			$scope.form = {};
+			$scope.keyword = {} ;
+			
+			$scope.initialize = function () {
+				//load products
+				$http.get("/rest/brands").then(resp => {
+					$scope.items = resp.data;
+					$scope.items.forEach(item => {
+					
+					})
+				});
+			}
+			
+			//Khởi đầu
+			$scope.initialize();
+
+			//Xóa form
+			$scope.reset = function () {
+				$scope.form = {
+				}
+			}
+
+			//Hiển thị lên form
+			$scope.edit = function (item) {
+				$scope.form = angular.copy(item);
+				//Chuyển sang tab form
+				//$(".nav-tabs a:eq(0)").tab("show");
+				$('html, body').animate({
+					scrollTop: $('#form').offset().top
+				}, 1000);
+			}
+			// Search by keyword
+			$scope.search = function (keyword) {
+				//var keyword = $scope.form.keyword;
+				$http.get(`/rest/brands/keyword/${keyword}`).then(resp => {		
+					console.log(keyword);
+					$scope.items = resp.data;
+					$scope.items.forEach(item => {
+						console.log(item.brand_id);
+					})
+				});
+			}
+			
+			//Thêm sản phẩm mới
+			$scope.create = function () {
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name){
+		             	alert("Thương hiệu này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập nhập tên thương hiệu!")
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				var item = angular.copy($scope.form);
+				$http.post(`/rest/brands`, item).then(resp => {
+					$scope.items.push(resp.data);
+					$scope.reset();
+					alert("Thêm mới thương hiệu thành công!");
+					location.reload();
+				}).catch(error => {
+					alert("Lỗi thêm mới thương hiệu!");
+					console.log("Error", error);
+				});
+			}
+
+
+
+			//Cập nhật sản phẩm
+			$scope.update = function () {
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name && $scope.form.brand_id != $scope.items[i].brand_id){
+		             	alert("Thương hiệu này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập nhập tên thương hiệu!")
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				$http.put(`/rest/brands/${item.brand_id}`, item).then(resp => {
+					var index = $scope.items.findIndex(p => p.id == item.id);
+					$scope.items[index] = item;
+					alert("Cập nhật thương hiệu thành công!");
+					location.reload();
+				})
+					.catch(error => {
+						alert("Lỗi cập nhật thương hiệu!");
+						console.log("Error", error);
+					});
+			}
+
+			//Xóa sản phẩm
+			$scope.delete = function (item) {
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn xóa thương hiệu này?")) {
+					$http.put(`/rest/brands/deleteLogical/${item.brand_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Xóa thương hiệu thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi xóa thương hiệu!");
+						console.log("Error", error);
+					})
+				}
+			}
+			$scope.updateLogical = function (item) {
+				var item = angular.copy($scope.form);
+				if (confirm("Bạn muốn khôi phục thương hiệu này?")) {
+					$http.put(`/rest/brands/updateLogical/${item.brand_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Khôi phục thương hiệu thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi tắt thương hiệu!");
+						console.log("Error", error);
+					})
+				}
+			}
+
+
+			//Phân trang
+			$scope.pager = {
+				page: 0,
+				size: 5,
+				get items() {
+					var start = this.page * this.size;
+					return $scope.items.slice(start, start + this.size)
+				},
+				get count() {
+					return Math.ceil(1.0 * $scope.items.length / this.size);
+				},
+				first() {
+					this.page = 0;
+				},
+				prev() {
+					this.page--;
+					if (this.page < 0) {
+						this.last();
+					}
+				},
+				next() {
+					this.page++;
+					if (this.page >= this.count) {
+						this.first();
+					}
+				},
+				last() {
+					this.page = this.count - 1;
+				},
+
+			}
+
+		});
+	</script>
+</body>
+
+</html>

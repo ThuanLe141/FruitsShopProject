@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/admin/fragments :: header">
+
+</head>
+<!--
+`body` tag options:
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+	<div ng-app="mycategory" ng-controller="category-ctrl" class="wrapper">
+		<!---->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:replace="/admin/fragments :: navbar">
+		</nav>
+		<aside th:replace="/admin/fragments :: sidebar">
+		</aside>
+
+		<div class="content-wrapper">
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<nav class="navbar navbar-light bg-light">
+						  <form class="form-inline">
+						    <input class="form-control mr-sm-2" type="search" placeholder="Search"
+						    	ng-model="form.keyword" aria-label="Search">
+						    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+						    	ng-click="search(form.keyword)">Search</button>
+						  </form>
+						</nav>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th class="shoping__product">#</th>
+									<th>Name</th>
+									<th>Status</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="item in pager.items">
+									<td>{{item.category_id}}</td>
+									<td>{{item.name}}</td>
+									<td class="badge badge-success mt-3" ng-if="item.is_enable == false">
+										Is Enable
+									</td>
+									<td class="badge badge-danger mt-3" ng-if="item.is_enable == true">
+										Is Disable
+									</td>
+									<td>
+										<a class="btn btn-primary my-2 align-center" ng-click="edit(item)"
+											th:text="'Edit'"></a>
+									</td>
+								</tr>
+								</tbody>
+						</table>
+			<!-------------------------------------->
+		     		<!--<table class="table table-striped">
+							<thead>
+								<tr class="h4">
+									<th class="align-middle" scope="col">#</th>
+									<th class="align-middle" scope="col">Name</th>
+									<th class="align-middle" scope="col">Status</th>
+									<th class="align-middle" scope="col">Edit</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="item in pager.items">
+								<tr class="h5">
+									<th class="align-middle" scope="row">{{item.category_id}}</th>
+									<td class="align-middle">{{item.name}}</td>
+									<td class="badge badge-success mt-3" ng-if="item.is_enable == false">
+										Is Enable
+									</td>
+									<td class="badge badge-danger mt-3" ng-if="item.is_enable == true">
+										Is Disable
+									</td>
+									<td>
+										<a class="btn btn-primary my-2 align-center" ng-click="edit(item)"
+											th:text="'Edit'"></a>
+									</td>
+								</tr>
+							</tbody>
+						</table> -->
+						<div class="panel-footer" style="margin-left:400px;margin-bottom:20px">
+							<button ng-click="pager.first()" class="btn btn-danger">
+								<< </button>
+									<button ng-click="pager.prev()" class="btn btn-primary">
+										< </button>
+											<button class="btn btn-success">{{pager.page + 1}} of
+												{{pager.count}}</button>
+											<button ng-click="pager.next()" class="btn btn-primary">
+												>
+											</button>
+											<button ng-click="pager.last()" class="btn btn-danger">
+												>>
+											</button>
+						</div>
+						<div class="col-12">
+							<!-- general form elements -->
+							<div id="form" class="card card-primary">
+								<div class="card-header">
+									<h3 class="card-title">Category Details</h3>
+								</div>
+								<form >
+									<div class="card-body">
+										<div class="row">
+											<div class="col-9">
+												<div style="display:none" class="form-group">
+													<label for="name">ID</label>
+													<input ng-model="form.category_id" type="text" class="form-control"
+														id="form.category_id" name="form.category_id" placeholder="Category Name">
+												</div>
+												<div class="form-group">
+													<label for="name">Name</label>
+													<input ng-model="form.name" type="text" class="form-control"
+														id="name" name="name" placeholder="Category Name">
+												</div>
+												<fieldset style="display:none" class="form-group row">
+													<legend class="col-form-label col-sm-2 float-sm-left pt-0">Status:
+													</legend>
+													<div class="col-sm-8 ml-3">
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="false"
+																class="form-check-input" type="radio" id="gridRadios1"
+																checked name="is_enable">
+															<label class="form-check-label" for="gridRadios1">
+																Enable
+															</label>
+														</div>
+														<div class="form-check">
+															<input ng-model="form.is_enable" ng-value="true"
+																class="form-check-input" type="radio" id="gridRadios2"
+																value="false" name="is_enable">
+															<label class="form-check-label" for="gridRadios2">
+																Disable
+															</label>
+														</div>
+													</div>
+												</fieldset>
+											</div>
+										<div class="form-row p-2 col-5">
+											<button ng-if="form.is_enable==null" ng-click="create()" class="btn btn-primary mr-3">
+												<b class="glyphicon glyphicon-plus"></b>Create
+											</button>
+											<button ng-if="form.is_enable!=null" ng-click="update()" class="btn btn-warning mr-3">
+												<b class="glyphicon glyphicon-save"></b>Update
+											</button>
+											<button ng-if="form.is_enable==false" ng-click="delete()" class="btn btn-danger mr-3">
+												<b class="glyphicon glyphicon-trash"></b>Delete
+											</button>
+											<button ng-if="form.is_enable==true" ng-click="updateLogical()" class="btn btn-success mr-3">
+												<b class="glyphicon glyphicon-trash"></b>Enable
+											</button>
+											<button ng-click="reset()" class="btn btn-info">
+												<b class="glyphicon glyphicon-refresh"></b>Reset
+											</button>
+										</div>
+								</form>
+
+							</div>
+							<!-- /.card -->
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+
+	<div th:replace="/admin/fragments :: scripts">
+	</div>
+	<script>
+		const app = angular.module("mycategory", []);
+		app.controller("category-ctrl", function ($scope, $http) {
+			
+			$scope.items = [];
+
+			$scope.form = {};
+			
+			$scope.initialize = function () {
+				//load products
+				$http.get("/rest/categories").then(resp => {
+					$scope.items = resp.data;
+					//$scope.items.forEach(item => {
+						//$scope.form.image = "user.png";
+					//})
+				});
+			}
+			//Khởi đầu
+			$scope.initialize();
+			
+			// Search by keyword
+			$scope.search = function (keyword) {
+				//var keyword = $scope.form.keyword;
+				$http.get(`/rest/categories/keyword/${keyword}`).then(resp => {		
+					$scope.items = resp.data;
+				});
+			}
+
+			//Xóa form
+			$scope.reset = function () {
+				$scope.form = {
+				
+				}
+			}
+
+			//Hiển thị lên form
+			$scope.edit = function (item) {
+				$scope.form = angular.copy(item);
+				$('html, body').animate({
+					scrollTop: $('#form').offset().top
+				}, 1000);
+			}
+
+			//Thêm sản phẩm mới
+			$scope.create = function () {
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name){
+		             	alert("Loại hàng này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập nhập tên loại mặt hàng!")
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				$http.post(`/rest/categories`, item).then(resp => {
+					$scope.items.push(resp.data);
+					$scope.reset();
+					alert("Thêm mới loại mặt hàng thành công!");
+					location.reload();
+				}).catch(error => {
+					alert("Lỗi thêm mới loại mặt hàng!");
+					console.log("Error", error);
+				});
+			}
+
+
+
+			//Cập nhật sản phẩm
+			$scope.update = function () {
+				for (var i = 0; i < $scope.items.length; i++) {
+		             if($scope.form.name == $scope.items[i].name && $scope.form.category_id != $scope.items[i].category_id){
+		             	alert("Loại hàng này đã tồn tại");
+		               	return;
+		             }
+	            }
+				if(document.getElementById("name").value == ""){
+					alert("Chưa nhập nhập tên loại mặt hàng!")
+					return;
+				}else{
+					$scope.form.is_enable = false;
+					var item = angular.copy($scope.form);
+				}
+				$http.put(`/rest/categories/${item.category_id}`, item).then(resp => {
+					var index = $scope.items.findIndex(p => p.id == item.id);
+					$scope.items[index] = item;
+					alert("Cập nhật loại mặt hàng thành công!");
+					location.reload();
+				})
+					.catch(error => {
+						alert("Lỗi cập nhật sản phẩm!");
+						console.log("Error", error);
+					});
+			}
+
+			//Xóa sản phẩm
+			$scope.delete = function (item) {
+				var item = angular.copy($scope.form);
+				//item.is_enable = false;
+				if (confirm("Bạn muốn xóa loại mặt hàng này?")) {
+					$http.put(`/rest/categories/deleteLogical/${item.category_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Xóa loại mặt hàng thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi xóa loại mặt hàng!");
+						console.log("Error", error);
+					})
+				}
+			}
+			
+			//Cập nhật tình trạng
+			$scope.updateLogical = function (item) {
+				var item = angular.copy($scope.form);
+				//item.is_enable = false;
+				if (confirm("Bạn muốn khôi phục loại mặt hàng này?")) {
+					$http.put(`/rest/categories/updateLogical/${item.category_id}`, item).then(resp => {
+						var index = $scope.items.findIndex(p => p.id == item.id);
+						$scope.items[index] = item;
+						$scope.reset();
+						alert("Khôi phục loại mặt hàng thành công!");
+						location.reload();
+					}).catch(error => {
+						alert("Lỗi khôi phục loại mặt hàng!");
+						console.log("Error", error);
+					})
+				}
+			}
+
+
+			//Phân trang
+			$scope.pager = {
+				page: 0,
+				size: 5,
+				get items() {
+					var start = this.page * this.size;
+					return $scope.items.slice(start, start + this.size)
+				},
+				get count() {
+					return Math.ceil(1.0 * $scope.items.length / this.size);
+				},
+				first() {
+					this.page = 0;
+				},
+				prev() {
+					this.page--;
+					if (this.page < 0) {
+						this.last();
+					}
+				},
+				next() {
+					this.page++;
+					if (this.page >= this.count) {
+						this.first();
+					}
+				},
+				last() {
+					this.page = this.count - 1;
+				},
+
+			}
+
+		});
+	</script>
+</body>
+
+</html>
